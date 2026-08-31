@@ -152,11 +152,19 @@ html[dir=rtl] .nav-i > a::after{transform-origin:right center}
 .drop a:hover svg{opacity:1}
 
 .hdr-r{display:flex;align-items:center;gap:16px;flex:none}
-.lang{display:flex;align-items:center;font-size:12.5px;font-weight:500;letter-spacing:.06em;color:var(--muted)}
-.lang button{padding:5px 7px;border-radius:6px;transition:color .3s var(--ease),background .3s var(--ease)}
-.lang button.on{color:var(--purple);font-weight:600}
-.lang button:not(.on):hover{color:var(--ink)}
-.lang i{width:1px;height:11px;background:var(--line);display:block}
+/* ---------------------------------------------------------------
+   HEBREW SWITCH — PARKED (not deleted).
+   Every Hebrew translation still lives in the data-he attributes and
+   the switching code is intact. To bring it back:
+     1. delete the ".lang{display:none}" line below
+     2. set  HE_ENABLED = true  in the script at the bottom
+   --------------------------------------------------------------- */
+.lang{display:none}
+.lang.on-air{display:flex;align-items:center;font-size:12.5px;font-weight:500;letter-spacing:.06em;color:var(--muted)}
+.lang.on-air button{padding:5px 7px;border-radius:6px;transition:color .3s var(--ease),background .3s var(--ease)}
+.lang.on-air button.on{color:var(--purple);font-weight:600}
+.lang.on-air button:not(.on):hover{color:var(--ink)}
+.lang.on-air i{width:1px;height:11px;background:var(--line);display:block}
 .hdr .btn{height:42px;padding:0 21px;font-size:14px}
 .burger{display:none;width:42px;height:42px;border-radius:10px;align-items:center;justify-content:center;transition:background .3s}
 .burger:hover{background:var(--panel)}
@@ -182,6 +190,14 @@ html[dir=rtl] .mnav .sub a{padding:11px 18px 11px 0}
 .hero{padding:150px 0 0;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:70px;align-items:center}
 .hero h1{margin-bottom:26px}
+/* rotating headline – four options, one at a time */
+h1.rot{position:relative;transition:height .8s var(--ease-out)}
+h1.rot > span{
+  position:absolute;top:0;inset-inline-start:0;width:100%;
+  opacity:0;transform:translateY(16px);text-wrap:balance;
+  transition:opacity .75s var(--ease),transform .9s var(--ease-out);
+}
+h1.rot > span.on{opacity:1;transform:none}
 .hero h1 em{font-style:normal;color:var(--purple);position:relative}
 .hero .lede{max-width:520px;margin-bottom:38px}
 .hero-btns{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:52px}
@@ -679,7 +695,12 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
     <div class="hero-grid">
       <div>
         <p class="eyebrow rv" data-he="עיצוב וייצור פתרונות חיבוריות מאז 1993">Interconnect design &amp; manufacturing since 1993</p>
-        <h1 class="rv rv-d1" data-he='ההנדסה שמאחורי <em>החיבורים</em> שמערכות קריטיות סומכות עליהם.'>Engineering the <em>connections</em> mission-critical systems depend on.</h1>
+        <h1 class="rv rv-d1 rot" id="heroRot">
+          <span class="on" data-he="מספקים פתרונות <em>חיבוריות</em> אמינים שמייצרים ערך לאורך זמן">Delivering reliable <em>connectivity</em> solutions that ensure lasting value</span>
+          <span data-he="מספקים פתרונות <em>חיבוריות</em> מקצה לקצה שמייעלים ומבטיחים ערך מתמשך">Delivering end-to-end <em>connectivity</em> solutions that drive efficiency and secure ongoing value</span>
+          <span data-he="מתכננים ומייצרים פתרונות <em>חיבוריות</em> אמינים">Engineering and manufacturing reliable <em>connectivity</em> solutions</span>
+          <span data-he="מתכננים ומייצרים פתרונות <em>חיבוריות</em> אמינים שמבטיחים ערך לאורך זמן">Engineering and manufacturing reliable <em>connectivity</em> solutions that secure lasting value</span>
+        </h1>
         <p class="lede rv rv-d2" data-he="קבוצת ארניר מתכננת ומייצרת כבלים, מארזי חיווט, מחברים והרכבות אלקטרו־מכניות עבור תעשיות הרפואה, הביטחון והתעשייה – מאב־טיפוס ראשון ועד ייצור סדרתי מלא.">ARNIR GROUP designs and manufactures cables, harnesses, connectors and electro-mechanical assemblies for medical, defense and industrial technology – from first prototype to full-scale production.</p>
         <div class="hero-btns rv rv-d3">
           <a href="#capabilities" class="btn btn-p"><span data-he="לצפייה ביכולות">Explore capabilities</span><svg class="ar" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.6 8h10.6M9.2 3.6L13.4 8l-4.2 4.4"/></svg></a>
@@ -1155,6 +1176,27 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
     tio.observe(tl);
   }
 
+  /* ---------- rotating headline ---------- */
+  var rot=document.getElementById('heroRot');
+  if(rot){
+    var items=[].slice.call(rot.children), idx=0, timer=null;
+    var fit=function(){ if(items[idx]) rot.style.height=items[idx].scrollHeight+'px'; };
+    window.__heroFit=fit;
+    var go=function(n){
+      idx=n;
+      items.forEach(function(sp,j){ sp.classList.toggle('on', j===n); });
+      fit();
+    };
+    var play=function(){ timer=setInterval(function(){ go((idx+1)%items.length); },4600); };
+    var stop=function(){ clearInterval(timer); timer=null; };
+    var boot=function(){ fit(); play(); };
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(boot); }
+    else { setTimeout(boot,400); }
+    window.addEventListener('resize',fit);
+    rot.addEventListener('mouseenter',stop);
+    rot.addEventListener('mouseleave',function(){ if(!timer) play(); });
+  }
+
   /* ---------- hero map parallax ---------- */
   var hm=document.getElementById('heroMap');
   if(hm && window.matchMedia('(hover:hover)').matches &&
@@ -1172,7 +1214,12 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
     }
   }
 
-  /* ---------- language ---------- */
+  /* ---------- language ----------
+     HE_ENABLED = false parks the Hebrew switch: the toggle stays hidden and
+     the page always renders in English. All Hebrew copy remains in the
+     data-he attributes. Flip to true (and remove .lang{display:none} in the
+     CSS) to put it back on air. */
+  var HE_ENABLED=false;
   var nodes=[].slice.call(document.querySelectorAll('[data-he]'));
   nodes.forEach(function(n){
     n.setAttribute('data-en', (n instanceof SVGElement) ? n.textContent : n.innerHTML);
@@ -1190,11 +1237,18 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
       x.classList.toggle('on', x.dataset.lang===l);
     });
     try{ localStorage.setItem('arnir-lang',l); }catch(e){}
+    if(window.__heroFit) setTimeout(window.__heroFit,30);
   };
   document.querySelectorAll('.lang button').forEach(function(x){
     x.addEventListener('click',function(){ setLang(x.dataset.lang); });
   });
-  try{ var saved=localStorage.getItem('arnir-lang'); if(saved==='he') setLang('he'); }catch(e){}
+  if(HE_ENABLED){
+    document.querySelectorAll('.lang').forEach(function(x){ x.classList.add('on-air'); });
+    try{ var saved=localStorage.getItem('arnir-lang'); if(saved==='he') setLang('he'); }catch(e){}
+  } else {
+    document.documentElement.lang='en';
+    document.documentElement.dir='ltr';
+  }
 
 })();
 </script>
