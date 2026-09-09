@@ -1524,12 +1524,10 @@ a.ct-row:hover b{color:var(--purple)}
 
   /* ---------- image edit mode ----------
      On every image, an Upload button in its bottom-right corner.
-     Active when the page is opened straight from disk (file://) or with ?edit=1,
-     so the published site on the server never shows it.
+     Always active. Add ?edit=0 to the URL to hide the buttons.
      "Save page" downloads this page with the new images baked in.        */
   (function(){
-    var ON = location.protocol === 'file:' || /[?&]edit=1/.test(location.search);
-    if(!ON || /[?&]edit=0/.test(location.search)) return;
+    if(/[?&]edit=0/.test(location.search)) return;
     var root=document.documentElement;
     var layer=document.getElementById('edLayer'), bar=document.getElementById('edBar');
     var note=document.getElementById('edNote'), file=document.getElementById('edFile');
