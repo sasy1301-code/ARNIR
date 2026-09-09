@@ -188,8 +188,8 @@ html[dir=rtl] .mnav .sub a{padding:11px 18px 11px 0}
 
 /* ============ HERO ============ */
 .hero{padding:150px 0 0;overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:70px;align-items:center}
-.hero h1{margin-bottom:26px}
+.hero-grid{display:grid;grid-template-columns:.873fr 1.127fr;gap:64px;align-items:center}
+.hero h1{margin-bottom:26px;font-size:clamp(32px,3.36vw,49px)}
 /* rotating headline – four options, one at a time */
 h1.rot{position:relative;transition:height .8s var(--ease-out)}
 h1.rot > span{
@@ -205,47 +205,37 @@ h1.rot.locked > span:not(.on){display:none}
 .hero h1 em{font-style:normal;color:var(--purple);position:relative}
 .hero .lede{max-width:520px;margin-bottom:38px}
 .hero-btns{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:52px}
-.hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:9px 17px;padding-top:26px;border-top:1px solid var(--line-2)}
-.hero-meta span{font-size:11px;letter-spacing:.085em;text-transform:uppercase;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:17px;white-space:nowrap}
+.hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:9px 17px;margin-top:6px;padding-top:26px;border-top:1px solid var(--line-2)}
+.hero-meta span{font-size:11px;letter-spacing:.085em;text-transform:uppercase;font-weight:500;color:var(--ink-2);display:flex;align-items:center;gap:17px;white-space:nowrap}
 .hero-meta span::after{content:"";width:3px;height:3px;border-radius:50%;background:var(--purple);opacity:.45}
 .hero-meta span:last-child::after{display:none}
 
 .shot{position:relative}
 #heroShots{top:-6px}
 
-/* ---- hero image trio ---- */
-.hs{position:relative;display:grid;grid-template-columns:1.5fr 1fr;gap:12px}
-.hs-t{
-  position:relative;margin:0;overflow:hidden;border-radius:14px;background:var(--panel);
-  box-shadow:0 0 0 1px rgba(30,15,32,.055),0 20px 44px -32px rgba(30,15,32,.5);
-  transition:box-shadow .6s var(--ease),transform .6s var(--ease-out);
-  will-change:transform;
+/* ---- hero slideshow ---- */
+.hs{position:relative}
+.hs-f{
+  position:relative;margin:0;overflow:hidden;border-radius:16px;aspect-ratio:128/85;
+  background:var(--panel);
+  box-shadow:0 0 0 1px rgba(30,15,32,.055),0 26px 58px -34px rgba(30,15,32,.5);
 }
-.hs-t img{
-  position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;
-  transform:scale(1.07);transition:transform 1.9s var(--ease-out);
-  filter:saturate(.93) contrast(1.02);
+.hs-f img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transform:scale(1.07);filter:saturate(.93) contrast(1.02);
+  transition:opacity 1.15s var(--ease),transform 7s var(--ease-out);
 }
-.in .hs-t img{transform:scale(1)}
-.hs-t:hover{box-shadow:0 0 0 1px rgba(113,52,112,.22),0 30px 60px -34px rgba(30,15,32,.6)}
-.hs-t:hover img{transform:scale(1.05)}
-.hs-a{grid-column:1/-1;aspect-ratio:305/100}
-.hs-b{aspect-ratio:351/250}
-.hs-c{}
-/* the hall panorama is wider than its frame – it drifts slowly across it */
-.hs-a img{width:112%;max-width:none;inset:0 auto 0 0;transform:none}
-.in .hs-a img{animation:hs-pan 26s cubic-bezier(.5,0,.5,1) infinite alternate}
-.hs-a:hover img,.hs-b:hover img,.hs-c:hover img{transition:transform 1.1s var(--ease-out)}
-.hs-a:hover img{transform:none}
-@keyframes hs-pan{from{transform:translateX(0)}to{transform:translateX(-10.7%)}}
-/* staggered wipe-in, top band first */
-.hs-a.clip{transition-delay:.05s}
-.hs-b.clip{transition-delay:.22s}
-.hs-c.clip{transition-delay:.38s}
+.hs-f img.on{opacity:1;transform:scale(1)}
+.hs-dots{position:absolute;z-index:3;bottom:15px;inset-inline-end:16px;display:flex;gap:7px}
+.hs-dots button{
+  width:7px;height:7px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.55);backdrop-filter:blur(4px);
+  transition:background .45s var(--ease),width .45s var(--ease-out);
+}
+.hs-dots button:hover{background:rgba(255,255,255,.85)}
+.hs-dots button.on{background:#fff;width:22px;border-radius:100px}
 .hs .brk{z-index:2}
-.shot-img{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3.05;background:var(--panel)}
-.shot-img img{width:100%;height:100%;object-fit:cover;transform:scale(1.05);transition:transform 1.6s var(--ease-out)}
-.shot:hover .shot-img img{transform:scale(1)}
+
 .brk{position:absolute;width:34px;height:34px;border:1.5px solid var(--purple);opacity:.9;pointer-events:none}
 .brk-tl{top:-9px;inset-inline-start:-9px;border-right:0;border-bottom:0}
 .brk-br{bottom:-9px;inset-inline-end:-9px;border-left:0;border-top:0}
@@ -480,19 +470,21 @@ html[dir=rtl] .i5:hover .i5-lk .ar{transform:translateX(-6px) scaleX(-1)}
 /* ============ INDUSTRIES ============ */
 .ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
 .ind{
-  display:block;position:relative;border-radius:var(--r);overflow:hidden;background:#0e0a10;
-  isolation:isolate;transition:transform .6s var(--ease-out),box-shadow .6s var(--ease)
+  display:flex;flex-direction:column;position:relative;border-radius:var(--r);overflow:hidden;
+  background:var(--white);isolation:isolate;
+  transition:transform .6s var(--ease-out),box-shadow .6s var(--ease)
 }
 .ind:hover{transform:translateY(-5px);box-shadow:0 30px 60px -30px rgba(30,15,32,.42)}
-.ind .im{aspect-ratio:4/3.2;overflow:hidden}
+.ind .im{aspect-ratio:4/3.2;overflow:hidden;flex:none;background:var(--panel)}
 .ind .im img{width:100%;height:100%;object-fit:cover;transition:transform 1.3s var(--ease-out),filter .7s var(--ease)}
 .ind:hover .im img{transform:scale(1.06)}
-.ind .bd{padding:30px 28px 32px;background:var(--white);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r);position:relative}
+.ind .bd{flex:1;display:flex;flex-direction:column;padding:30px 28px 32px;background:var(--white);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r) var(--r);position:relative}
 .ind .bd::before{content:"";position:absolute;top:0;inset-inline-start:0;height:2px;width:100%;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease-out)}
 html[dir=rtl] .ind .bd::before{transform-origin:right}
 .ind:hover .bd::before{transform:scaleX(1)}
 .ind h3{margin-bottom:11px}
 .ind p{font-size:14.8px;color:var(--muted);line-height:1.6;margin:0 0 20px}
+.ind .bd .tlink{margin-top:auto}
 .ind .ic{position:absolute;top:20px;inset-inline-end:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--purple);backdrop-filter:blur(6px)}
 .ind .ic svg{width:19px;height:19px}
 
@@ -623,8 +615,8 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
   .cert-grid{grid-template-columns:1fr}
   .tl-items{grid-template-columns:1fr 1fr}
   .badge{position:static;margin-top:14px;padding:14px 18px;box-shadow:none}
-  .hs{grid-template-columns:1.22fr 1fr;gap:10px}
   .hs .brk{display:none}
+  .hs-dots{bottom:11px;inset-inline-end:12px}
   .lab-shots{grid-template-columns:1fr}
   .lab-shots .s1{grid-row:auto;aspect-ratio:4/3}
   .ftr-grid{grid-template-columns:1fr 1fr;gap:36px}
@@ -770,15 +762,19 @@ html.ck-on .a11y-panel{bottom:calc(var(--ck-h,104px) + 82px)}
   transform:scale(1.06);animation:ph-in 1.8s var(--ease-out) forwards}
 @keyframes ph-in{to{transform:scale(1)}}
 .phero-scrim{position:absolute;inset:0;
-  background:linear-gradient(96deg,rgba(38,12,40,.95) 0%,rgba(38,12,40,.88) 32%,
-             rgba(38,12,40,.56) 58%,rgba(38,12,40,.2) 84%,rgba(38,12,40,.07) 100%),
-             linear-gradient(0deg,rgba(22,6,24,.5),rgba(22,6,24,0) 46%)}
+  background:linear-gradient(96deg,
+             rgba(38,12,40,.90) 0%,
+             rgba(38,12,40,.72) 24%,
+             rgba(38,12,40,.40) 46%,
+             rgba(38,12,40,.14) 62%,
+             rgba(38,12,40,0)   75%,
+             rgba(38,12,40,0)   100%)}
 .phero-in{position:relative;z-index:2;padding:112px 0 100px;max-width:730px}
 .phero .eyebrow{color:#e2c4e1}
 .phero .eyebrow::before{background:#e2c4e1;opacity:.85}
 .phero h1{color:#fff;margin-bottom:22px;font-size:clamp(34px,4.4vw,60px)}
 .phero h1 em{font-style:normal;color:#d9a9d8}
-.phero p{color:rgba(255,255,255,.84);font-weight:300;margin:0;max-width:610px;
+.phero p{color:rgba(255,255,255,.84);font-weight:300;margin:0;max-width:560px;
          font-size:clamp(16px,1.3vw,19px);line-height:1.66}
 .crumb{position:absolute;z-index:3;top:28px;left:0;right:0}
 .crumb span{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
@@ -961,7 +957,7 @@ a.ct-row:hover b{color:var(--purple)}
         </a>
         <div class="drop">
           <a href="industry-medical.html" data-he="רפואה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3"/><path d="M6 12.4h2.6l1.7-4.4 2.3 8.2 1.8-5.3 1.2 1.5H18"/></svg> Medical</a>
-          <a href="industry-defense.html" data-he="ביטחון"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 4 5.7v5.9c0 4.9 3.3 8.4 8 9.6 4.7-1.2 8-4.7 8-9.6V5.7z"/><circle cx="12" cy="11.4" r="1.7"/><path d="M12 6.4v3.3M12 13.1v3.4M7.2 11.4h3.1M13.7 11.4h3.1"/></svg> Military</a>
+          <a href="industry-defense.html" data-he="תעופה וחלל"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c.9 0 1.6 1.2 1.7 3l.1 2.6 7.2 4.2v1.9l-7.2-2v3.4l2.3 1.6v1.4L12 18.6l-4.1 1v-1.4l2.3-1.6v-3.4l-7.2 2v-1.9l7.2-4.2.1-2.6c.1-1.8.8-3 1.7-3z"/></svg> Aerospace &amp; Aviation</a>
           <a href="industry-industrial.html" data-he="תקשורת ותעשייה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 19.2h7.2"/><path d="M7 19.2v-3.5"/><circle cx="7" cy="14.1" r="1.7"/><path d="M8.2 12.9 12.4 8.7"/><circle cx="13.6" cy="7.6" r="1.7"/><path d="M15.1 8.3 18.7 10.4"/><path d="M18.7 10.4 21 9M18.7 10.4l2.2 1.1"/></svg> Communication and Industrial</a>
         </div>
       </div>
@@ -991,7 +987,7 @@ a.ct-row:hover b{color:var(--purple)}
   <a href="industries.html" data-he="תעשיות">Industries</a>
   <div class="sub">
     <a href="industry-medical.html" data-he="רפואה">Medical</a>
-    <a href="industry-defense.html" data-he="ביטחון">Military</a>
+    <a href="industry-defense.html" data-he="תעופה וחלל">Aerospace &amp; Aviation</a>
     <a href="industry-industrial.html" data-he="תקשורת ותעשייה">Communication and Industrial</a>
   </div>
   <a href="quality.html" data-he="תקנים ואיכות">Certifications and Quality</a>
@@ -1037,7 +1033,7 @@ a.ct-row:hover b{color:var(--purple)}
     <div class="ftr-grid">
       <div>
         <a href="index.html" class="logo"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="225.72 392.04 2998.44 1036.08" fill="currentColor" role="img" aria-label="ARNIR GROUP"><defs><g><g id="glyph-0-0"><path d="M 5.859375 0 L 270.703125 -695.78125 L 470.0625 -695.78125 L 731.9375 0 L 528.671875 0 L 334.21875 -591.21875 L 404.578125 -591.21875 L 205.21875 0 Z M 177.859375 -117.265625 L 177.859375 -269.71875 L 566.796875 -269.71875 L 566.796875 -117.265625 Z M 177.859375 -117.265625 "/></g><g id="glyph-0-1"><path d="M 215.96875 -277.53125 L 215.96875 -412.40625 L 334.21875 -412.40625 C 360.925781 -412.40625 381.285156 -418.914062 395.296875 -431.9375 C 409.304688 -444.96875 416.3125 -462.234375 416.3125 -483.734375 C 416.3125 -505.222656 409.304688 -522.484375 395.296875 -535.515625 C 381.285156 -548.546875 360.925781 -555.0625 334.21875 -555.0625 L 215.96875 -555.0625 L 215.96875 -695.78125 L 365.484375 -695.78125 C 413.703125 -695.78125 456.050781 -686.984375 492.53125 -669.390625 C 529.007812 -651.804688 557.671875 -627.378906 578.515625 -596.109375 C 599.359375 -564.835938 609.78125 -528.359375 609.78125 -486.671875 C 609.78125 -444.972656 599.191406 -408.488281 578.015625 -377.21875 C 556.847656 -345.945312 527.375 -321.515625 489.59375 -303.921875 C 451.8125 -286.328125 407.1875 -277.53125 355.71875 -277.53125 Z M 57.65625 0 L 57.65625 -695.78125 L 253.109375 -695.78125 L 253.109375 0 Z M 432.921875 0 L 243.328125 -297.078125 L 419.234375 -335.203125 L 654.734375 0 Z M 432.921875 0 "/></g><g id="glyph-0-2"><path d="M 57.65625 0 L 57.65625 -695.78125 L 194.46875 -695.78125 L 253.109375 -549.203125 L 253.109375 0 Z M 536.5 0 L 132.90625 -507.1875 L 194.46875 -695.78125 L 598.0625 -188.609375 Z M 536.5 0 L 487.640625 -154.40625 L 487.640625 -695.78125 L 683.078125 -695.78125 L 683.078125 0 Z M 536.5 0 "/></g><g id="glyph-0-3"><path d="M 57.65625 0 L 57.65625 -695.78125 L 253.109375 -695.78125 L 253.109375 0 Z M 57.65625 0 "/></g><g id="glyph-1-0"><path d="M 129.984375 2.9375 C 114.128906 2.9375 99.359375 0.00390625 85.671875 -5.859375 C 71.992188 -11.722656 60.050781 -19.867188 49.84375 -30.296875 C 39.632812 -40.722656 31.707031 -52.9375 26.0625 -66.9375 C 20.414062 -80.945312 17.59375 -96.097656 17.59375 -112.390625 C 17.59375 -128.679688 20.46875 -143.773438 26.21875 -157.671875 C 31.976562 -171.566406 39.960938 -183.78125 50.171875 -194.3125 C 60.378906 -204.851562 72.429688 -213.050781 86.328125 -218.90625 C 100.222656 -224.769531 115.316406 -227.703125 131.609375 -227.703125 C 149.628906 -227.703125 166.1875 -224.117188 181.28125 -216.953125 C 196.375 -209.785156 208.8125 -199.6875 218.59375 -186.65625 L 201.96875 -170.046875 C 194.15625 -181.117188 184.164062 -189.640625 172 -195.609375 C 159.84375 -201.585938 146.378906 -204.578125 131.609375 -204.578125 C 114.015625 -204.578125 98.484375 -200.613281 85.015625 -192.6875 C 71.554688 -184.757812 61.078125 -173.847656 53.578125 -159.953125 C 46.085938 -146.054688 42.34375 -130.09375 42.34375 -112.0625 C 42.34375 -94.25 46.085938 -78.394531 53.578125 -64.5 C 61.078125 -50.601562 71.394531 -39.691406 84.53125 -31.765625 C 97.675781 -23.835938 112.609375 -19.875 129.328125 -19.875 C 146.046875 -19.875 160.539062 -23.238281 172.8125 -29.96875 C 185.082031 -36.695312 194.53125 -46.46875 201.15625 -59.28125 C 207.78125 -72.101562 211.203125 -87.523438 211.421875 -105.546875 L 225.109375 -95.453125 L 127.046875 -95.453125 L 127.046875 -117.28125 L 236.1875 -117.28125 L 236.1875 -113.6875 C 236.1875 -88.5 231.675781 -67.21875 222.65625 -49.84375 C 213.644531 -32.46875 201.210938 -19.328125 185.359375 -10.421875 C 169.503906 -1.515625 151.046875 2.9375 129.984375 2.9375 Z M 129.984375 2.9375 "/></g><g id="glyph-1-1"><path d="M 43.984375 -100.328125 L 43.984375 -120.53125 L 109.125 -120.53125 C 123.894531 -120.53125 135.1875 -124.273438 143 -131.765625 C 150.820312 -139.265625 154.734375 -149.3125 154.734375 -161.90625 C 154.734375 -174.0625 150.820312 -183.992188 143 -191.703125 C 135.1875 -199.421875 123.894531 -203.28125 109.125 -203.28125 L 43.984375 -203.28125 L 43.984375 -224.125 L 109.125 -224.125 C 123.675781 -224.125 136.164062 -221.460938 146.59375 -216.140625 C 157.019531 -210.828125 165 -203.5 170.53125 -194.15625 C 176.070312 -184.8125 178.84375 -174.171875 178.84375 -162.234375 C 178.84375 -149.847656 176.070312 -138.984375 170.53125 -129.640625 C 165 -120.304688 157.019531 -113.085938 146.59375 -107.984375 C 136.164062 -102.878906 123.675781 -100.328125 109.125 -100.328125 Z M 28.671875 0 L 28.671875 -224.125 L 52.453125 -224.125 L 52.453125 0 Z M 164.1875 0 L 80.140625 -103.59375 L 103.265625 -111.09375 L 194.8125 0 Z M 164.1875 0 "/></g><g id="glyph-1-2"><path d="M 129.65625 3.25 C 113.800781 3.25 99.085938 0.265625 85.515625 -5.703125 C 71.941406 -11.671875 60.050781 -19.921875 49.84375 -30.453125 C 39.632812 -40.992188 31.648438 -53.265625 25.890625 -67.265625 C 20.140625 -81.273438 17.265625 -96.316406 17.265625 -112.390625 C 17.265625 -128.679688 20.085938 -143.773438 25.734375 -157.671875 C 31.378906 -171.566406 39.304688 -183.726562 49.515625 -194.15625 C 59.722656 -204.582031 71.554688 -212.726562 85.015625 -218.59375 C 98.484375 -224.457031 113.144531 -227.390625 129 -227.390625 C 144.851562 -227.390625 159.566406 -224.457031 173.140625 -218.59375 C 186.710938 -212.726562 198.601562 -204.582031 208.8125 -194.15625 C 219.019531 -183.726562 226.945312 -171.507812 232.59375 -157.5 C 238.238281 -143.5 241.0625 -128.351562 241.0625 -112.0625 C 241.0625 -95.988281 238.238281 -80.945312 232.59375 -66.9375 C 226.945312 -52.9375 219.070312 -40.722656 208.96875 -30.296875 C 198.875 -19.867188 187.09375 -11.671875 173.625 -5.703125 C 160.164062 0.265625 145.507812 3.25 129.65625 3.25 Z M 129 -19.875 C 145.9375 -19.875 160.972656 -23.890625 174.109375 -31.921875 C 187.253906 -39.960938 197.570312 -50.929688 205.0625 -64.828125 C 212.5625 -78.722656 216.3125 -94.578125 216.3125 -112.390625 C 216.3125 -125.640625 214.140625 -137.851562 209.796875 -149.03125 C 205.453125 -160.21875 199.367188 -169.992188 191.546875 -178.359375 C 183.734375 -186.722656 174.554688 -193.179688 164.015625 -197.734375 C 153.484375 -202.296875 141.8125 -204.578125 129 -204.578125 C 112.28125 -204.578125 97.347656 -200.613281 84.203125 -192.6875 C 71.066406 -184.757812 60.753906 -173.847656 53.265625 -159.953125 C 45.773438 -146.054688 42.03125 -130.203125 42.03125 -112.390625 C 42.03125 -99.140625 44.195312 -86.867188 48.53125 -75.578125 C 52.875 -64.285156 58.957031 -54.457031 66.78125 -46.09375 C 74.601562 -37.726562 83.832031 -31.265625 94.46875 -26.703125 C 105.113281 -22.148438 116.625 -19.875 129 -19.875 Z M 129 -19.875 "/></g><g id="glyph-1-3"><path d="M 110.4375 3.25 C 94.144531 3.25 79.644531 -0.382812 66.9375 -7.65625 C 54.238281 -14.925781 44.195312 -24.914062 36.8125 -37.625 C 29.425781 -50.332031 25.734375 -64.613281 25.734375 -80.46875 L 25.734375 -224.125 L 49.84375 -224.125 L 49.84375 -81.765625 C 49.84375 -69.171875 52.445312 -58.203125 57.65625 -48.859375 C 62.875 -39.523438 70.097656 -32.359375 79.328125 -27.359375 C 88.554688 -22.367188 98.925781 -19.875 110.4375 -19.875 C 121.945312 -19.875 132.207031 -22.367188 141.21875 -27.359375 C 150.226562 -32.359375 157.394531 -39.472656 162.71875 -48.703125 C 168.039062 -57.929688 170.703125 -68.84375 170.703125 -81.4375 L 170.703125 -224.125 L 194.484375 -224.125 L 194.484375 -80.140625 C 194.484375 -64.285156 190.84375 -50.054688 183.5625 -37.453125 C 176.289062 -24.859375 166.300781 -14.925781 153.59375 -7.65625 C 140.894531 -0.382812 126.507812 3.25 110.4375 3.25 Z M 110.4375 3.25 "/></g><g id="glyph-1-4"><path d="M 43.984375 -89.90625 L 43.984375 -111.09375 L 110.109375 -111.09375 C 119.234375 -111.09375 127.429688 -112.9375 134.703125 -116.625 C 141.984375 -120.3125 147.738281 -125.578125 151.96875 -132.421875 C 156.207031 -139.265625 158.328125 -147.460938 158.328125 -157.015625 C 158.328125 -166.578125 156.207031 -174.773438 151.96875 -181.609375 C 147.738281 -188.453125 141.984375 -193.773438 134.703125 -197.578125 C 127.429688 -201.378906 119.234375 -203.28125 110.109375 -203.28125 L 43.984375 -203.28125 L 43.984375 -224.125 L 111.734375 -224.125 C 125.203125 -224.125 137.253906 -221.351562 147.890625 -215.8125 C 158.535156 -210.28125 166.953125 -202.519531 173.140625 -192.53125 C 179.328125 -182.539062 182.421875 -170.703125 182.421875 -157.015625 C 182.421875 -143.554688 179.328125 -131.773438 173.140625 -121.671875 C 166.953125 -111.578125 158.535156 -103.757812 147.890625 -98.21875 C 137.253906 -92.675781 125.203125 -89.90625 111.734375 -89.90625 Z M 28.671875 0 L 28.671875 -224.125 L 52.453125 -224.125 L 52.453125 0 Z M 28.671875 0 "/></g></g></defs><g><use xlink:href="#glyph-0-0" x="219.990086" y="1087.903126"/></g><g><use xlink:href="#glyph-0-1" x="930.455943" y="1087.903126"/></g><g><use xlink:href="#glyph-0-2" x="1556.877697" y="1087.903126"/><use xlink:href="#glyph-0-3" x="2278.093382" y="1087.903126"/><use xlink:href="#glyph-0-1" x="2569.315975" y="1087.903126"/></g><g><use xlink:href="#glyph-1-0" x="1151.603988" y="1424.885249"/><use xlink:href="#glyph-1-1" x="1403.425492" y="1424.885249"/></g><g><use xlink:href="#glyph-1-2" x="1600.843126" y="1424.885249"/><use xlink:href="#glyph-1-3" x="1859.505835" y="1424.885249"/><use xlink:href="#glyph-1-4" x="2079.727486" y="1424.885249"/></g></svg></a>
-        <p data-he="פתרונות חיבוריות מהונדסים לתעשיות הרפואה, הביטחון והתעשייה – מאז 1993.">Engineered connectivity for medical, defense and industrial technology – since 1993.</p>
+        <p data-he="פתרונות חיבוריות מהונדסים לתעשיות הרפואה, התעופה והתעשייה – מאז 1993.">Engineered connectivity for medical, aerospace and industrial technology – since 1993.</p>
       </div>
       <div>
         <h4 data-he="שירותים ויכולות">Services and Capabilities</h4>
@@ -1064,7 +1060,7 @@ a.ct-row:hover b{color:var(--purple)}
         <h4 data-he="תעשיות">Industries</h4>
         <ul>
           <li><a href="industry-medical.html" data-he="רפואה">Medical</a></li>
-          <li><a href="industry-defense.html" data-he="ביטחון">Military</a></li>
+          <li><a href="industry-defense.html" data-he="תעופה וחלל">Aerospace &amp; Aviation</a></li>
           <li><a href="industry-industrial.html" data-he="תקשורת ותעשייה">Communication &amp; Industrial</a></li>
         </ul>
       </div>
@@ -1253,27 +1249,42 @@ a.ct-row:hover b{color:var(--purple)}
     rot.addEventListener('mouseleave',function(){ if(!timer) play(); });
   }
 
-  /* ---------- hero trio: depth parallax ---------- */
+  /* ---------- hero slideshow ---------- */
+  (function(){
+    var frame=document.getElementById('hsFrame'), dots=document.getElementById('hsDots');
+    if(!frame) return;
+    var imgs=[].slice.call(frame.querySelectorAll('img'));
+    var btns=dots?[].slice.call(dots.querySelectorAll('button')):[];
+    var i=0, timer=null, DUR=5200;
+    var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function show(n){
+      i=(n+imgs.length)%imgs.length;
+      imgs.forEach(function(im,k){ im.classList.toggle('on',k===i); });
+      btns.forEach(function(b,k){ b.classList.toggle('on',k===i); });
+    }
+    function play(){ if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
+    function stop(){ clearInterval(timer); timer=null; }
+    btns.forEach(function(b,k){ b.addEventListener('click',function(){ stop(); show(k); play(); }); });
+    frame.addEventListener('mouseenter',stop);
+    frame.addEventListener('mouseleave',play);
+    document.addEventListener('visibilitychange',function(){ document.hidden?stop():play(); });
+    play();
+  })();
+
+  /* ---------- hero image: soft parallax ---------- */
   var hs=document.getElementById('heroShots');
   if(hs && window.matchMedia('(hover:hover)').matches &&
      !window.matchMedia('(prefers-reduced-motion:reduce)').matches){
-    var tiles=[['.hs-a',4],['.hs-b',8],['.hs-c',13]].map(function(t){
-      return [hs.querySelector(t[0]),t[1]];
-    }).filter(function(t){ return t[0]; });
-    var host=hs.closest('.hero');
-    if(host && tiles.length){
+    var fr=hs.querySelector('.hs'), host=hs.closest('.hero');
+    if(fr && host){
+      fr.style.transition='transform .7s var(--ease-out)';
       host.addEventListener('mousemove',function(e){
         var r=hs.getBoundingClientRect();
         var dx=(e.clientX-(r.left+r.width/2))/r.width;
         var dy=(e.clientY-(r.top+r.height/2))/r.height;
-        tiles.forEach(function(t){
-          t[0].style.transform='translate3d('+(dx*t[1]).toFixed(1)+'px,'+
-                                              (dy*t[1]*.7).toFixed(1)+'px,0)';
-        });
+        fr.style.transform='translate3d('+(dx*9).toFixed(1)+'px,'+(dy*6).toFixed(1)+'px,0)';
       });
-      host.addEventListener('mouseleave',function(){
-        tiles.forEach(function(t){ t[0].style.transform=''; });
-      });
+      host.addEventListener('mouseleave',function(){ fr.style.transform=''; });
     }
   }
 
