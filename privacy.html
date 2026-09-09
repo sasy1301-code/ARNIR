@@ -633,6 +633,45 @@ html[dir=rtl] .m-labels text{letter-spacing:0;font-size:29px}
 .ftr-legal a{font-size:13px;color:var(--muted);transition:color .35s var(--ease)}
 .ftr-legal a:hover{color:var(--purple);text-decoration:underline}
 
+/* ============ IMAGE EDIT MODE (?edit=1) ============ */
+.ed-bar{
+  position:fixed;z-index:200;left:50%;transform:translateX(-50%);bottom:22px;
+  display:flex;align-items:center;gap:10px;padding:11px 13px;
+  background:rgba(20,14,24,.94);backdrop-filter:blur(10px);border-radius:14px;
+  box-shadow:0 22px 54px -20px rgba(0,0,0,.6);font-size:13.5px;color:#fff;
+}
+.ed-bar b{font-weight:600;letter-spacing:.02em;padding-inline-end:6px}
+.ed-bar span.ed-n{color:#d9a9d8;font-weight:600}
+.ed-bar button{
+  font:inherit;font-size:13px;font-weight:500;border:0;cursor:pointer;border-radius:9px;
+  padding:8px 14px;background:rgba(255,255,255,.14);color:#fff;
+  transition:background .3s var(--ease);
+}
+.ed-bar button:hover{background:rgba(255,255,255,.26)}
+.ed-bar button.ed-save{background:#d9a9d8;color:#1a1220}
+.ed-bar button.ed-save:hover{background:#f0d4ef}
+.ed-bar .ed-x{background:transparent;padding:8px 10px;opacity:.7}
+
+html.ed img{cursor:pointer;transition:outline-color .25s var(--ease),filter .25s var(--ease)}
+html.ed img{outline:2px dashed rgba(113,52,112,.0);outline-offset:-4px}
+html.ed img:hover{outline-color:#d9a9d8;filter:brightness(1.06) saturate(1.05)}
+html.ed .hs-f img:not(.on){pointer-events:none}
+html.ed .phero-scrim,html.ed .crumb,html.ed .map-tag,html.ed .brk{pointer-events:none}
+.ed-tip{
+  position:fixed;z-index:201;pointer-events:none;padding:6px 11px;border-radius:8px;
+  background:rgba(20,14,24,.92);color:#fff;font-size:12px;font-weight:500;letter-spacing:.02em;
+  opacity:0;transition:opacity .2s var(--ease);
+}
+.ed-tip.on{opacity:1}
+.ed-note{
+  position:fixed;z-index:202;left:50%;transform:translateX(-50%);bottom:86px;
+  background:#d9a9d8;color:#1a1220;font-size:13px;font-weight:500;
+  padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .35s var(--ease);
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.5);pointer-events:none;max-width:min(90vw,520px);
+  text-align:center;line-height:1.5;
+}
+.ed-note.on{opacity:1}
+
 /* ============ ACCESSIBILITY + COOKIES ============ */
 .skip{position:fixed;top:-60px;inset-inline-start:16px;z-index:999;background:var(--purple);color:#fff;
   padding:11px 18px;border-radius:10px;font-size:14px;font-weight:500;transition:top .25s var(--ease)}
@@ -1118,6 +1157,16 @@ a.ct-row:hover b{color:var(--purple)}
     </div>
   </div>
 </div>
+<div class="ed-bar" id="edBar" hidden>
+  <b>Image edit</b>
+  <span>Click any image to replace it &middot; <span class="ed-n" id="edCount">0</span> changed</span>
+  <button type="button" id="edReset">Reset</button>
+  <button type="button" class="ed-save" id="edSave">Save page</button>
+  <button type="button" class="ed-x" id="edExit" title="Exit">&times;</button>
+</div>
+<div class="ed-tip" id="edTip">Click to replace</div>
+<div class="ed-note" id="edNote"></div>
+<input type="file" id="edFile" accept="image/*" hidden>
 <!-- ==== /ACCESSIBILITY + COOKIES ==== -->
 <script>
 (function(){
@@ -1421,6 +1470,118 @@ a.ct-row:hover b{color:var(--purple)}
     }
     document.getElementById('ckAll').addEventListener('click',function(){ decide('all'); });
     document.getElementById('ckEss').addEventListener('click',function(){ decide('essential'); });
+  })();
+
+
+  /* ---------- image edit mode: index.html?edit=1 ----------
+     Click any image, pick a file, it is resized and embedded in place.
+     "Save page" downloads this page with the new images baked in.        */
+  (function(){
+    if(!/[?&]edit=1/.test(location.search)) return;
+    var root=document.documentElement, bar=document.getElementById('edBar');
+    var tip=document.getElementById('edTip'), note=document.getElementById('edNote');
+    var file=document.getElementById('edFile'), countEl=document.getElementById('edCount');
+    if(!bar||!file) return;
+    var KEY='arnir-img:'+location.pathname.split('/').pop();
+    var target=null, changed={}, noteT=null;
+
+    root.classList.add('ed'); bar.hidden=false;
+
+    function say(msg){
+      note.textContent=msg; note.classList.add('on');
+      clearTimeout(noteT); noteT=setTimeout(function(){ note.classList.remove('on'); },4200);
+    }
+    function imgs(){ return [].slice.call(document.querySelectorAll('main img, .hs-f img, .phero-img img')); }
+    function keyOf(im){ return imgs().indexOf(im); }
+    function refresh(){ countEl.textContent=Object.keys(changed).length; }
+
+    /* restore anything replaced earlier on this device */
+    try{
+      var saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+      var list=imgs();
+      Object.keys(saved).forEach(function(k){ if(list[k]) { list[k].src=saved[k]; changed[k]=1; } });
+    }catch(e){}
+    refresh();
+
+    document.addEventListener('click',function(e){
+      var im=e.target.closest && e.target.closest('img');
+      if(!im || bar.contains(e.target)) return;
+      e.preventDefault(); e.stopPropagation();
+      target=im; file.value=''; file.click();
+    },true);
+
+    document.addEventListener('mousemove',function(e){
+      var im=e.target.closest && e.target.closest('img');
+      if(im && !bar.contains(e.target)){
+        tip.classList.add('on');
+        tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY+16)+'px';
+      } else tip.classList.remove('on');
+    });
+
+    file.addEventListener('change',function(){
+      var f=file.files && file.files[0]; if(!f||!target) return;
+      var rd=new FileReader();
+      rd.onload=function(){
+        var img=new Image();
+        img.onload=function(){
+          var MAX=1800, w=img.width, h=img.height;
+          if(w>MAX){ h=Math.round(h*MAX/w); w=MAX; }
+          var c=document.createElement('canvas'); c.width=w; c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          var type=(f.type==='image/png'||f.type==='image/webp')?f.type:'image/jpeg';
+          var data=c.toDataURL(type, type==='image/jpeg'?0.86:undefined);
+          var k=keyOf(target);
+          target.src=data; target.removeAttribute('srcset');
+          changed[k]=1; refresh();
+          try{
+            var st=JSON.parse(localStorage.getItem(KEY)||'{}');
+            st[k]=data; localStorage.setItem(KEY,JSON.stringify(st));
+          }catch(e){
+            say('The image was replaced, but it is too large to remember after a reload. Click "Save page" before closing.');
+          }
+          target=null;
+        };
+        img.src=rd.result;
+      };
+      rd.readAsDataURL(f);
+    });
+
+    document.getElementById('edReset').addEventListener('click',function(){
+      try{ localStorage.removeItem(KEY); }catch(e){}
+      location.reload();
+    });
+    document.getElementById('edExit').addEventListener('click',function(){
+      location.href=location.pathname;
+    });
+
+    document.getElementById('edSave').addEventListener('click',function(){
+      var d=document.documentElement.cloneNode(true);
+      d.className=''; d.removeAttribute('style');
+      [].forEach.call(d.querySelectorAll('.in'),function(e){ e.classList.remove('in'); });
+      ['.wmap','.hs','#heroRot','.tl-fill'].forEach(function(sel){
+        [].forEach.call(d.querySelectorAll(sel),function(e){ e.removeAttribute('style'); });
+      });
+      var ck=d.querySelector('#ck');
+      if(ck){ ck.classList.remove('on'); ck.removeAttribute('style'); }
+      var ap=d.querySelector('#a11yPanel');
+      if(ap){ ap.classList.remove('on'); ap.setAttribute('hidden',''); }
+      var ab=d.querySelector('#a11yBtn'); if(ab) ab.setAttribute('aria-expanded','false');
+      [].forEach.call(d.querySelectorAll('.a11y-t'),function(e){ e.setAttribute('aria-pressed','false'); });
+      var fs=d.querySelector('#a11yFs'); if(fs) fs.textContent='100%';
+      var sl=d.querySelectorAll('.hs-f img');
+      [].forEach.call(sl,function(e,i){ e.classList.toggle('on', i===0); });
+      [].forEach.call(d.querySelectorAll('.hs-dots button'),function(e,i){ e.classList.toggle('on', i===0); });
+      var ed=d.querySelector('#edBar'); if(ed) ed.setAttribute('hidden','');
+      var t=d.querySelector('#edTip'); if(t) t.classList.remove('on');
+      var n=d.querySelector('#edNote'); if(n){ n.classList.remove('on'); n.textContent=''; }
+      var html='<!DOCTYPE html>\n'+d.outerHTML;
+      var name=location.pathname.split('/').pop()||'index.html';
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+      a.download=name; document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500);
+      say('Saved as ' + name + ' — put it back in the site-deploy folder, replacing the old file.');
+    });
   })();
 
 </script>
