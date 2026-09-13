@@ -1529,9 +1529,12 @@ a.ct-row:hover b{color:var(--purple)}
 
   /* ---------- image edit mode ----------
      On every image, an Upload button in its bottom-right corner.
-     Always active. Add ?edit=0 to the URL to hide the buttons.
+     PARKED — the whole feature is switched off site-wide.
+     To bring it back: set EDIT_ENABLED to true (nothing else was removed).
      "Save page" downloads this page with the new images baked in.        */
   (function(){
+    var EDIT_ENABLED = false;
+    if(!EDIT_ENABLED) return;
     if(/[?&]edit=0/.test(location.search)) return;
     var root=document.documentElement;
     var layer=document.getElementById('edLayer'), bar=document.getElementById('edBar');
