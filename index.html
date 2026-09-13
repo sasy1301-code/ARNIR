@@ -1412,6 +1412,28 @@ html.ck-on .a11y-panel{bottom:calc(var(--ck-h,104px) + 82px)}
     play();
   })();
 
+  /* ---------- generic image rotators (.sw) ---------- */
+  [].slice.call(document.querySelectorAll('.sw')).forEach(function(frame){
+    var imgs=[].slice.call(frame.querySelectorAll('img'));
+    if(imgs.length<2) return;
+    var dots=frame.querySelector('.sw-dots');
+    var btns=dots?[].slice.call(dots.querySelectorAll('button')):[];
+    var i=0, timer=null, DUR=4800;
+    var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function show(n){
+      i=(n+imgs.length)%imgs.length;
+      imgs.forEach(function(im,k){ im.classList.toggle('on',k===i); });
+      btns.forEach(function(b,k){ b.classList.toggle('on',k===i); });
+    }
+    function play(){ if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
+    function stop(){ clearInterval(timer); timer=null; }
+    btns.forEach(function(b,k){ b.addEventListener('click',function(){ stop(); show(k); play(); }); });
+    frame.addEventListener('mouseenter',stop);
+    frame.addEventListener('mouseleave',play);
+    document.addEventListener('visibilitychange',function(){ document.hidden?stop():play(); });
+    show(0); play();
+  });
+
   /* ---------- hero image: soft parallax ---------- */
   var hs=document.getElementById('heroShots');
   if(hs && window.matchMedia('(hover:hover)').matches &&
