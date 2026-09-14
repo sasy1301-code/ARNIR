@@ -651,6 +651,7 @@ html.ed img{outline:2px dashed transparent;outline-offset:-4px;transition:outlin
 html.ed img:hover{outline-color:rgba(217,169,216,.9)}
 html.ed .phero-scrim,html.ed .crumb,html.ed .map-tag,html.ed .brk{pointer-events:none}
 
+.ed-bar[hidden],.ed-layer[hidden],.ed-note[hidden]{display:none!important}
 .ed-bar{
   position:fixed;z-index:200;left:50%;transform:translateX(-50%);bottom:22px;
   display:flex;align-items:center;gap:10px;padding:11px 13px;
@@ -1193,6 +1194,8 @@ a.ct-row:hover b{color:var(--purple)}
     </div>
   </div>
 </div>
+<!-- PARKED: image-edit UI (Upload buttons / "Image edit" bar). Switched off site-wide.
+     To restore: uncomment this block and set EDIT_ENABLED = true in the script.
 <div class="ed-layer" id="edLayer" hidden></div>
 <div class="ed-bar" id="edBar" hidden>
   <b>Image edit</b>
@@ -1203,6 +1206,7 @@ a.ct-row:hover b{color:var(--purple)}
 </div>
 <div class="ed-note" id="edNote"></div>
 <input type="file" id="edFile" accept="image/*" hidden>
+-->
 <!-- ==== /ACCESSIBILITY + COOKIES ==== -->
 <script>
 (function(){
