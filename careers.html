@@ -468,7 +468,7 @@ html[dir=rtl] .i5-lk .ar{transform:scaleX(-1)}
 html[dir=rtl] .i5:hover .i5-lk .ar{transform:translateX(-6px) scaleX(-1)}
 
 /* ============ INDUSTRIES ============ */
-.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.ind-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
 .ind{
   display:flex;flex-direction:column;position:relative;border-radius:var(--r);overflow:hidden;
   background:var(--white);isolation:isolate;
@@ -485,7 +485,7 @@ html[dir=rtl] .ind .bd::before{transform-origin:right}
 .ind h3{margin-bottom:11px}
 .ind p{font-size:14.8px;color:var(--muted);line-height:1.6;margin:0 0 20px}
 .ind .bd .tlink{margin-top:auto}
-.ind .ic{position:absolute;top:20px;inset-inline-end:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--purple);backdrop-filter:blur(6px)}
+.ind .ic{position:absolute;top:20px;inset-inline-end:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--purple);backdrop-filter:blur(6px);box-shadow:0 0 0 1px rgba(30,15,32,.08),0 6px 16px -8px rgba(30,15,32,.35)}
 .ind .ic svg{width:19px;height:19px}
 
 /* ============ TIMELINE ============ */
@@ -882,7 +882,7 @@ html.ck-on .a11y-panel{bottom:calc(var(--ck-h,104px) + 82px)}
 html[dir=rtl] .note{padding:4px 20px 4px 0}
 
 /* other industries */
-.rel{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:6px}
+.rel{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:6px}
 .rel a{display:flex;align-items:center;gap:14px;padding:20px 22px;background:#fff;
   border:1px solid var(--line);border-radius:var(--r);font-size:15.5px;font-weight:500;
   transition:transform .5s var(--ease-out),box-shadow .5s var(--ease),border-color .45s var(--ease)}
@@ -1026,7 +1026,8 @@ a.ct-row:hover b{color:var(--purple)}
         <div class="drop">
           <a href="industry-medical.html" data-he="רפואה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="4.4" width="18.8" height="15.2" rx="3"/><path d="M6 12.4h2.6l1.7-4.4 2.3 8.2 1.8-5.3 1.2 1.5H18"/></svg> Medical</a>
           <a href="industry-defense.html" data-he="תעופה וחלל"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c.9 0 1.6 1.2 1.7 3l.1 2.6 7.2 4.2v1.9l-7.2-2v3.4l2.3 1.6v1.4L12 18.6l-4.1 1v-1.4l2.3-1.6v-3.4l-7.2 2v-1.9l7.2-4.2.1-2.6c.1-1.8.8-3 1.7-3z"/></svg> Aerospace &amp; Aviation</a>
-          <a href="industry-industrial.html" data-he="תקשורת ותעשייה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 19.2h7.2"/><path d="M7 19.2v-3.5"/><circle cx="7" cy="14.1" r="1.7"/><path d="M8.2 12.9 12.4 8.7"/><circle cx="13.6" cy="7.6" r="1.7"/><path d="M15.1 8.3 18.7 10.4"/><path d="M18.7 10.4 21 9M18.7 10.4l2.2 1.1"/></svg> Communication and Industrial</a>
+          <a href="industry-communication.html" data-he="תקשורת"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6.4" r="1.5"/><path d="M9.5 4.1a4.6 4.6 0 0 0 0 4.6"/><path d="M14.5 4.1a4.6 4.6 0 0 1 0 4.6"/><path d="M6.9 2.4a8.1 8.1 0 0 0 0 8"/><path d="M17.1 2.4a8.1 8.1 0 0 1 0 8"/><path d="M8 21.4 12 8.2l4 13.2"/><path d="M9.5 17.2h5"/></svg> Communication</a>
+          <a href="industry-industrial.html" data-he="תעשייה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 19.2h7.2"/><path d="M7 19.2v-3.5"/><circle cx="7" cy="14.1" r="1.7"/><path d="M8.2 12.9 12.4 8.7"/><circle cx="13.6" cy="7.6" r="1.7"/><path d="M15.1 8.3 18.7 10.4"/><path d="M18.7 10.4 21 9M18.7 10.4l2.2 1.1"/></svg> Industrial</a>
         </div>
       </div>
 
@@ -1056,7 +1057,8 @@ a.ct-row:hover b{color:var(--purple)}
   <div class="sub">
     <a href="industry-medical.html" data-he="רפואה">Medical</a>
     <a href="industry-defense.html" data-he="תעופה וחלל">Aerospace &amp; Aviation</a>
-    <a href="industry-industrial.html" data-he="תקשורת ותעשייה">Communication and Industrial</a>
+    <a href="industry-communication.html" data-he="תקשורת">Communication</a>
+    <a href="industry-industrial.html" data-he="תעשייה">Industrial</a>
   </div>
   <a href="quality.html" data-he="תקנים ואיכות">Certifications and Quality</a>
   <a href="contact.html" class="btn btn-p"><span data-he="צור קשר">Contact</span><svg class="ar" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.6 8h10.6M9.2 3.6L13.4 8l-4.2 4.4"/></svg></a>
@@ -1138,7 +1140,8 @@ a.ct-row:hover b{color:var(--purple)}
         <ul>
           <li><a href="industry-medical.html" data-he="רפואה">Medical</a></li>
           <li><a href="industry-defense.html" data-he="תעופה וחלל">Aerospace &amp; Aviation</a></li>
-          <li><a href="industry-industrial.html" data-he="תקשורת ותעשייה">Communication &amp; Industrial</a></li>
+          <li><a href="industry-communication.html" data-he="תקשורת">Communication</a></li>
+          <li><a href="industry-industrial.html" data-he="תעשייה">Industrial</a></li>
         </ul>
       </div>
     </div>
