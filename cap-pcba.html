@@ -233,7 +233,12 @@ h1.rot.locked > span:not(.on){display:none}
   transition:background .45s var(--ease),width .45s var(--ease-out);
 }
 .hs-dots button:hover{background:rgba(255,255,255,.85)}
-.hs-dots button.on{background:#fff;width:22px;border-radius:100px}
+.hs-dots button.on{background:rgba(255,255,255,.4);width:22px;border-radius:100px;position:relative;overflow:hidden}
+.hs-dots button.on::after{content:"";position:absolute;inset:0;border-radius:100px;background:#fff;
+  transform-origin:left center;transform:scaleX(0);animation:dotfill var(--dur,5200ms) linear forwards}
+.hold .hs-dots button.on::after,.hold .sw-dots button.on::after{animation-play-state:paused}
+@keyframes dotfill{to{transform:scaleX(1)}}
+html.os-nomo .hs-dots button.on::after,html.os-nomo .sw-dots button.on::after{animation:none;transform:none}
 .hs .brk{z-index:2}
 
 .brk{position:absolute;width:34px;height:34px;border:1.5px solid var(--purple);opacity:.9;pointer-events:none}
@@ -795,12 +800,12 @@ html.ck-on .a11y-panel{bottom:calc(var(--ck-h,104px) + 82px)}
   .a11y-btn{width:46px;height:46px;inset-inline-start:16px;bottom:16px}
   .a11y-panel{inset-inline-start:16px;bottom:72px}
 }
-@media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition-duration:.01ms!important}
-  .rv{opacity:1;transform:none}.clip{clip-path:none}
-  .m-comet,.m-glow,.m-ring,.m-halo,.map-tag i,.m-labels text{animation:none!important}
-  .m-comet{opacity:.45;stroke-dasharray:none;stroke-dashoffset:0}
-}
+/* OS-level "reduce motion" — applied only when RESPECT_OS_MOTION is true in the script
+   (currently false: animations always play; only the site's own "Stop animations" toggle disables them). */
+html.os-nomo *{animation:none!important;transition-duration:.01ms!important}
+html.os-nomo .rv{opacity:1;transform:none}html.os-nomo .clip{clip-path:none}
+html.os-nomo .m-comet,html.os-nomo .m-glow,html.os-nomo .m-ring,html.os-nomo .m-halo,html.os-nomo .map-tag i,html.os-nomo .m-labels text{animation:none!important}
+html.os-nomo .m-comet{opacity:.45;stroke-dasharray:none;stroke-dashoffset:0}
 </style>
 <style>
 /* ============ CATEGORY PAGE ============ */
@@ -861,7 +866,9 @@ html.ck-on .a11y-panel{bottom:calc(var(--ck-h,104px) + 82px)}
 .sw-dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;cursor:pointer;
   background:rgba(30,15,32,.2);transition:background .45s var(--ease),width .45s var(--ease-out)}
 .sw-dots button:hover{background:rgba(30,15,32,.42)}
-.sw-dots button.on{width:22px;border-radius:100px;background:var(--purple)}
+.sw-dots button.on{width:22px;border-radius:100px;background:rgba(113,52,112,.28);position:relative;overflow:hidden}
+.sw-dots button.on::after{content:"";position:absolute;inset:0;border-radius:100px;background:var(--purple);
+  transform-origin:left center;transform:scaleX(0);animation:dotfill var(--dur,4800ms) linear forwards}
 
 .plist{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:1px;
        background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -1222,6 +1229,13 @@ a.ct-row:hover b{color:var(--purple)}
 <!-- ==== /ACCESSIBILITY + COOKIES ==== -->
 <script>
 (function(){
+  /* Motion policy: the OS "reduce motion" setting is IGNORED (client decision, 2026-09-15).
+     Set RESPECT_OS_MOTION to true to honour it again. The site's own accessibility
+     toggle "Stop animations" keeps working regardless. */
+  var RESPECT_OS_MOTION=false;
+  function reducedMotion(){ return RESPECT_OS_MOTION && window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
+  if(reducedMotion()) document.documentElement.classList.add('os-nomo');
+
   'use strict';
 
   /* ---------- header ---------- */
@@ -1352,18 +1366,20 @@ a.ct-row:hover b{color:var(--purple)}
     if(!frame) return;
     var imgs=[].slice.call(frame.querySelectorAll('img'));
     var btns=dots?[].slice.call(dots.querySelectorAll('button')):[];
-    var i=0, timer=null, DUR=5200;
-    var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var i=0, timer=null, DUR=5200, host=frame.parentElement;
+    var reduce=reducedMotion();
+    host.style.setProperty('--dur', DUR+'ms');
     function show(n){
       i=(n+imgs.length)%imgs.length;
       imgs.forEach(function(im,k){ im.classList.toggle('on',k===i); });
-      btns.forEach(function(b,k){ b.classList.toggle('on',k===i); });
+      btns.forEach(function(b,k){ b.classList.remove('on'); });
+      if(btns[i]){ void btns[i].offsetWidth; btns[i].classList.add('on'); }   /* restart the timer fill */
     }
-    function play(){ if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
-    function stop(){ clearInterval(timer); timer=null; }
+    function play(){ host.classList.remove('hold'); if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
+    function stop(){ clearInterval(timer); timer=null; host.classList.add('hold'); }
     btns.forEach(function(b,k){ b.addEventListener('click',function(){ stop(); show(k); play(); }); });
-    frame.addEventListener('mouseenter',stop);
-    frame.addEventListener('mouseleave',play);
+    host.addEventListener('mouseenter',stop);
+    host.addEventListener('mouseleave',play);
     document.addEventListener('visibilitychange',function(){ document.hidden?stop():play(); });
     play();
   })();
@@ -1375,14 +1391,16 @@ a.ct-row:hover b{color:var(--purple)}
     var dots=frame.querySelector('.sw-dots');
     var btns=dots?[].slice.call(dots.querySelectorAll('button')):[];
     var i=0, timer=null, DUR=4800;
-    var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var reduce=reducedMotion();
+    frame.style.setProperty('--dur', DUR+'ms');
     function show(n){
       i=(n+imgs.length)%imgs.length;
       imgs.forEach(function(im,k){ im.classList.toggle('on',k===i); });
-      btns.forEach(function(b,k){ b.classList.toggle('on',k===i); });
+      btns.forEach(function(b,k){ b.classList.remove('on'); });
+      if(btns[i]){ void btns[i].offsetWidth; btns[i].classList.add('on'); }
     }
-    function play(){ if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
-    function stop(){ clearInterval(timer); timer=null; }
+    function play(){ frame.classList.remove('hold'); if(!reduce && !timer) timer=setInterval(function(){ show(i+1); },DUR); }
+    function stop(){ clearInterval(timer); timer=null; frame.classList.add('hold'); }
     btns.forEach(function(b,k){ b.addEventListener('click',function(){ stop(); show(k); play(); }); });
     frame.addEventListener('mouseenter',stop);
     frame.addEventListener('mouseleave',play);
@@ -1393,7 +1411,7 @@ a.ct-row:hover b{color:var(--purple)}
   /* ---------- hero image: soft parallax ---------- */
   var hs=document.getElementById('heroShots');
   if(hs && window.matchMedia('(hover:hover)').matches &&
-     !window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+     !reducedMotion()){
     var fr=hs.querySelector('.hs'), host=hs.closest('.hero');
     if(fr && host){
       fr.style.transition='transform .7s var(--ease-out)';
@@ -1410,7 +1428,7 @@ a.ct-row:hover b{color:var(--purple)}
   /* ---------- about map parallax ---------- */
   var am=document.getElementById('aboutMap');
   if(am && window.matchMedia('(hover:hover)').matches &&
-     !window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+     !reducedMotion()){
     var wm=am.querySelector('.wmap');
     if(wm){
       am.addEventListener('mousemove',function(e){
